@@ -1,0 +1,60 @@
+name: Deploy playground
+
+# Publishes the password-protected single-page playground (playground/site plus the password gate in
+# playground/functions) to its own Cloudflare Pages project, `imoves-playground`, at
+# https://imoves-playground.pages.dev. Completely separate from the live site and the development
+# view: different branch, different Pages project, different address. Nothing here touches
+# imoves-site, imoves-website or the imoves.com domains.
+#
+# Runs on every push to the `playground` branch, or by hand from the Actions tab.
+# Uses the same repo secrets as the main workflow: CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+
+on:
+  push:
+    branches: [playground]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-pages-playground
+  cancel-in-progress: true
+
+env:
+  PROJECT: imoves-playground
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: playground
+
+      - name: Rebuild the packages block from the live price data
+        run: python3 playground/build.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Create the Pages project if it does not exist yet
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@3 pages project list > projects.txt
+          grep -qw -- "$PROJECT" projects.txt \
+            || npx --yes wrangler@3 pages project create "$PROJECT" --production-branch playground
+
+      - name: Deploy (functions/ is picked up from the working directory, so the password gate goes too)
+        working-directory: playground
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@3 pages deploy site --project-name "$PROJECT" --branch playground --commit-dirty=true | tee deploy.log
+          echo "## Playground deploy (commit $(git rev-parse --short HEAD))" >> "$GITHUB_STEP_SUMMARY"
+          grep -Eo 'https://[a-z0-9.-]+\.pages\.dev' deploy.log | sort -u | sed 's/^/- /' >> "$GITHUB_STEP_SUMMARY"
