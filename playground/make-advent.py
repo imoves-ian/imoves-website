@@ -139,6 +139,152 @@ card = ('<div data-suggest="7" class="row px-20" style="margin:10px auto 60px;ma
         '<p style="margin:0;color:#3a2a40">Miss Peasnall, Google review</p></div></div>')
 t = t[:blk_start] + card + t[blk_end:]
 
+
+# ---------------------------------------------------------------- 8 to 11. calendar, how it works, what you get, brush headings
+SIGNUP = 'https://platform.imoves.com/sign-up?nid=106'
+LOGIN = 'https://platform.imoves.com/login'
+DAYS = [('Mon', 30, 'Nov'), ('Tue', 1, 'Dec'), ('Wed', 2, 'Dec'), ('Thu', 3, 'Dec'), ('Fri', 4, 'Dec'),
+        ('Mon', 7, 'Dec'), ('Tue', 8, 'Dec'), ('Wed', 9, 'Dec'), ('Thu', 10, 'Dec'), ('Fri', 11, 'Dec'),
+        ('Mon', 14, 'Dec'), ('Tue', 15, 'Dec'), ('Wed', 16, 'Dec'), ('Thu', 17, 'Dec'), ('Fri', 18, 'Dec')]
+# brand colour pairs (100% door, 25% tint for the opened inside)
+COLS = [('#E03C31', '#F7CECC'), ('#702F8A', '#DBCBE2'), ('#0085CA', '#BFE1F2'), ('#05A445', '#B0D9B2')]
+PEEK = {0: '9337dervz2', 7: 'z2rwkhuq6a', 14: 'pgd1i938wz'}   # door index -> video thumbnail
+LONG = {'Mon': 'Monday', 'Tue': 'Tuesday', 'Wed': 'Wednesday', 'Thu': 'Thursday', 'Fri': 'Friday'}
+MONTH = {'Nov': 'November', 'Dec': 'December'}
+
+doors = []
+for i, (d, n, m) in enumerate(DAYS):
+    c, tint = COLS[(i + 2 * (i // 5)) % len(COLS)]
+    when = f'{LONG[d]} {n} {MONTH[m]}'
+    inside = (f'<picture><source srcset="../video/thumbs/{PEEK[i]}.webp" type="image/webp">'
+              f'<img src="../video/thumbs/{PEEK[i]}.jpg" alt="" loading="lazy" width="1280" height="720"></picture>'
+              if i in PEEK else '<span class="aa-star" aria-hidden="true">★</span>')
+    doors.append(
+        f'<li class="aa-door{" aa-peek" if i in PEEK else ""}" style="--c:{c};--t:{tint}">'
+        f'<button type="button" aria-label="Door {i + 1}: opens {when}" aria-pressed="false">'
+        f'<span class="aa-inside">{inside}<span class="aa-opens">Opens {d} {n} {m}</span></span>'
+        f'<span class="aa-front"><span class="aa-num">{i + 1}</span><span class="aa-date">{d} {n} {m}</span></span>'
+        f'</button></li>')
+
+calendar = f'''<section class="aa-sec aa-cal" data-suggest="8" aria-labelledby="aa-cal-h">
+<div class="aa-wrap">
+<h2 class="aa-title" id="aa-cal-h"><span>Your Christmas classroom countdown</span></h2>
+<p class="aa-lead">15 doors, one for every school day from 30 November to 18 December. Behind each one is a new festive Active Blast for your class. Tap a door to peek.</p>
+<ol class="aa-doors">{''.join(doors)}</ol>
+</div></section>'''
+
+steps = [
+    ('Sign up for free', 'Create your free imoves account in a minute, using the button below.', '#702F8A'),
+    ('Open a door each morning', 'From Monday 30 November, a new door unlocks every school day, right up to Friday 18 December.', '#E03C31'),
+    ('Move for 3–5 minutes', 'Press play and follow along. No planning, no equipment, just Christmas fun.', '#0085CA'),
+]
+how = f'''<section class="aa-sec aa-how" data-suggest="9" aria-labelledby="aa-how-h">
+<div class="aa-wrap">
+<h2 class="aa-title" id="aa-how-h"><span>How it works</span></h2>
+<ol class="aa-steps">{''.join(f'<li><span class="aa-circle" style="--c:{c}">{i}</span><h3>{h}</h3><p>{p}</p></li>' for i, (h, p, c) in enumerate(steps, 1))}</ol>
+<div class="aa-ctas"><a class="aa-btn" href="{SIGNUP}" target="_blank">Join Active Advent 2026 – it's free</a>
+<p class="aa-have">Already have an imoves account, or had a free trial? <a href="{LOGIN}">Log in</a> – there's nothing else to do.</p></div>
+</div></section>'''
+
+cards = [
+    ('15 festive Active Blasts', 'A new fun-filled activity every school day, with follow-along videos for primary classrooms.', '#E03C31', '#F7CECC'),
+    ('Your own advent calendar', 'Build the excitement as your class opens a colourful new door each day, and revisit favourites whenever you like.', '#702F8A', '#DBCBE2'),
+    ('Certificates and a poster', 'Download certificates for your Active Superstars and a poster for your classroom wall.', '#0085CA', '#BFE1F2'),
+    ('Davies Sports prizes', 'Top user prizes every week from our sponsor <a href="https://www.daviessports.co.uk/imoves">Davies Sports</a>, including two disco lights with speakers.', '#05A445', '#B0D9B2'),
+]
+get = f'''<section class="aa-sec aa-get" data-suggest="10" aria-labelledby="aa-get-h">
+<div class="aa-wrap">
+<h2 class="aa-title" id="aa-get-h"><span>What you get</span></h2>
+<p class="aa-lead">It's educational, mental-health boosting and gets your children active every day.</p>
+<div class="aa-get-grid">
+<div class="aa-pics">
+<picture class="aa-pic1"><source srcset="../images/800x450/0x0-0x0/active-advent/copy-of-landing-page-images-active-advent-2.webp" type="image/webp"><img src="../images/800x450/0x0-0x0/active-advent/copy-of-landing-page-images-active-advent-2.jpg" alt="An Active Blast playing on a classroom screen, with snowmen and a Christmas tree" width="800" height="533" loading="lazy"></picture>
+<picture class="aa-pic2"><source srcset="../images/800x450/0x0-0x0/active-advent/copy-of-landing-page-images-active-advent-1.webp" type="image/webp"><img src="../images/800x450/0x0-0x0/active-advent/copy-of-landing-page-images-active-advent-1.jpg" alt="The Active Advent calendar, certificate and Davies Sports disco light prize" width="800" height="533" loading="lazy"></picture>
+</div>
+<ul class="aa-cards">{''.join(f'<li style="--c:{c};--t:{tt}"><h3>{h}</h3><p>{p}</p></li>' for h, p, c, tt in cards)}</ul>
+</div></div></section>'''
+
+a0 = t.find('<div class="bg-white text-black pt-40 pb-20 md:py-50" data-block="image-and-usp">')
+a1 = t.find('<div class="my-30 md:my-50 lg:my-75" data-block="videos-block">')
+assert 0 < a0 < a1, 'usp blocks not found'
+t = t[:a0] + calendar + how + get + t[a1:]
+
+# 11. headings over a brush swipe (brand guideline: titles sit over brush shapes)
+t = suball('<h3 class="text-3xl md:text-4xl font-semibold text-purple leading-snug px-20 mb-30"> A little taste of Christmas magic!</h3>',
+           '<h2 class="aa-title" data-suggest="11"><span>A little taste of Christmas magic!</span></h2>', t)
+t = suball('<h3 class="text-3xl md:text-4xl font-semibold text-purple leading-snug px-20 mb-20"> Happy teachers using imoves say...</h3>',
+           '<h2 class="aa-title"><span>Happy teachers using imoves say…</span></h2>', t)
+
+AA_CSS = '''<style>
+.aa-sec{padding:64px 0}
+.aa-wrap{max-width:1140px;margin:0 auto;padding:0 20px}
+.aa-cal{background:#fff}
+.aa-how{background:#F3ECF6}
+.aa-get{background:#fff}
+.aa-title{text-align:center;margin:0 0 14px;line-height:1.2}
+.aa-title > span:first-child{position:relative;display:inline-block;padding:10px 34px;color:#702F8A;font-weight:700;font-size:clamp(1.7rem,3.6vw,2.6rem);z-index:0}
+.aa-title > span:first-child::before{content:"";position:absolute;inset:-6px -4px;z-index:-1;background:var(--sw,#FDE3CB);
+  -webkit-mask:url(/assets/brush/swipe-2.svg) center/100% 100% no-repeat;mask:url(/assets/brush/swipe-2.svg) center/100% 100% no-repeat}
+.aa-how .aa-title > span:first-child::before{--sw:#FDD4DD;background:#FDD4DD}
+.aa-lead{text-align:center;max-width:760px;margin:0 auto 34px;font-size:1.15rem;color:#24152b}
+/* calendar */
+.aa-doors{list-style:none;margin:0;padding:18px;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;background:#DBCBE2;border-radius:22px;box-shadow:inset 0 0 0 6px #B997C5}
+.aa-door button{position:relative;display:block;width:100%;aspect-ratio:4/3;border:0;padding:0;background:var(--t);border-radius:14px;cursor:pointer;perspective:900px;font:inherit;box-shadow:0 4px 10px rgba(36,21,43,.18)}
+.aa-front,.aa-inside{position:absolute;inset:0;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.aa-inside{overflow:hidden;background:var(--t)}
+.aa-inside img{width:100%;height:100%;object-fit:cover}
+.aa-star{font-size:2.2rem;color:var(--c)}
+.aa-opens{position:absolute;left:0;right:0;bottom:0;background:rgba(36,21,43,.78);color:#fff;font-weight:600;font-size:.82rem;padding:3px 4px;text-align:center}
+.aa-front{background:var(--c);color:#fff;transform-origin:left center;transition:transform .55s cubic-bezier(.3,.7,.3,1);box-shadow:inset 0 0 0 3px rgba(255,255,255,.35)}
+.aa-front::after{content:"";position:absolute;right:10px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:#FBC697}
+.aa-num{font-weight:700;font-size:clamp(1.6rem,3.4vw,2.6rem);line-height:1}
+.aa-date{font-weight:600;font-size:clamp(.7rem,1.3vw,.95rem);opacity:.95;margin-top:4px}
+.aa-door.aa-peek .aa-front{transform:rotateY(-58deg)}
+.aa-door button:hover .aa-front{transform:rotateY(-22deg)}
+.aa-door.aa-peek button:hover .aa-front{transform:rotateY(-70deg)}
+.aa-door button[aria-pressed="true"] .aa-front{transform:rotateY(-105deg)}
+@media (prefers-reduced-motion:reduce){.aa-front{transition:none}}
+@media (max-width:640px){.aa-doors{gap:8px;padding:10px;border-radius:16px}.aa-front,.aa-inside,.aa-door button{border-radius:10px}.aa-date{display:none}.aa-front::after{width:5px;height:5px;right:5px}.aa-opens{display:none}.aa-star{font-size:1.4rem}}
+/* how it works */
+.aa-steps{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;text-align:center}
+.aa-steps h3{color:#702F8A;font-weight:700;font-size:1.4rem;margin:14px 0 6px}
+.aa-steps p{margin:0;font-size:1.05rem}
+.aa-steps a,.aa-have a,.aa-cards a{color:#702F8A;font-weight:700;text-decoration:underline}
+.aa-circle{display:inline-grid;place-items:center;width:92px;height:92px;color:#fff;font-weight:700;font-size:2.6rem;position:relative;z-index:0}
+.aa-circle::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--c);-webkit-mask:url(/assets/brush/circle.svg) center/contain no-repeat;mask:url(/assets/brush/circle.svg) center/contain no-repeat}
+.aa-ctas{text-align:center;margin-top:36px}
+.aa-btn{display:inline-block;background:#E03C31;color:#fff!important;font-weight:700;font-size:1.25rem;border-radius:999px;padding:12px 34px;text-decoration:none;transition:background .15s,transform .15s}
+.aa-btn:hover{background:#c8352b;transform:translateY(-2px)}
+.aa-have{margin:14px 0 0;font-size:1rem}
+@media (max-width:760px){.aa-steps{grid-template-columns:1fr;gap:22px}}
+/* what you get */
+.aa-get-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:center}
+.aa-pics{position:relative;padding-bottom:18%}
+.aa-pics img{border-radius:16px;box-shadow:0 12px 30px rgba(36,21,43,.18)}
+.aa-pic1{display:block;width:82%}
+.aa-pic2{display:block;width:62%;position:absolute;right:0;bottom:0;transform:rotate(3deg)}
+.aa-pic2 img{border:6px solid #fff}
+.aa-cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.aa-cards li{background:var(--t);border-radius:16px;padding:18px 18px 16px;border-top:6px solid var(--c)}
+.aa-cards h3{margin:0 0 6px;font-weight:700;font-size:1.2rem;color:#24152b}
+.aa-cards p{margin:0;font-size:1rem;line-height:1.5}
+@media (max-width:880px){.aa-get-grid{grid-template-columns:1fr}.aa-pics{max-width:560px;margin:0 auto 10px;width:100%}}
+@media (max-width:520px){.aa-cards{grid-template-columns:1fr}}
+/* existing blocks that now use the brush titles */
+[data-block="videos-block"] .aa-title,[data-block="images-block"] .aa-title{margin-bottom:10px}
+</style>
+<script>
+document.addEventListener('click',function(e){var b=e.target.closest('.aa-door button');if(!b)return;
+  b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')==='true'?'false':'true');});
+</script>'''
+t = suball('</head>', AA_CSS + '</head>', t)
+
+# banner: the existing-account line under the button
+t = suball(" Join Active Advent 2026 – it's free </a></div></div></div>",
+           " Join Active Advent 2026 – it's free </a></div>"
+           f'<p data-suggest="9" class="px-30 text-white mt-20" style="font-size:1.05rem">Already have an imoves account, or had a free trial? '
+           f'<a href="{LOGIN}" style="color:#fff;font-weight:700;text-decoration:underline">Just log in</a>.</p></div></div>', t)
+
 # ---------------------------------------------------------------- all addresses that point at the live site
 for attr in ('src', 'href', 'srcset'):
     t = re.sub(rf'{attr}="\.\./(?!default/|video/cf-player)', f'{attr}="https://imoves.com/', t)
@@ -154,6 +300,10 @@ SUGGESTIONS = [
     ('Introduce the videos first', 'The sentence introducing the three videos sat underneath them. It now comes first.', 'Order'),
     ('Active Advent logo in the header', 'The Active Advent logo (Santa and reindeer) replaces the imoves November logo top-left, on this page only. A brand exception you confirmed; every other page keeps the monthly imoves logo.', 'Brand exception'),
     ('Google review as a card', 'The Google review was a large block of purple text. It now sits in a card with stars, to match the other reviews.', 'Design'),
+    ('An advent calendar you can see', '15 doors, one per school day, with dates. Three are peeking open to show what is behind them; tap any door to open it.', 'New section'),
+    ('How it works in three steps', 'Sign up, open a door, move for 3–5 minutes. Says clearly that anyone with an account or a past free trial just logs in (also under the banner button).', 'New section'),
+    ('One "What you get" section', 'The two near-identical sections and the purple strip between them become one section: four cards and the two pictures. The page is about a third shorter.', 'Merged'),
+    ('Headings on brush swipes', 'Section headings sit on the supplied Swipe brush in a soft brand tint, as the brand guidelines show; step numbers sit on the Circle brush.', 'Brand'),
 ]
 items = ''.join(
     f'<li><button type="button" data-go="{i}"><span class="n">{i}</span><span><strong>{h}</strong>'
