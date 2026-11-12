@@ -28,6 +28,10 @@ One scrolling page with a sticky menu that jumps to each section: banner, how it
 - Buttons go to the real platform checkout, sign-up and login, and the real demo booking link.
 - Left out on purpose: Google Tag Manager (so playground visits do not count in the live analytics), the LeadConnector chat widget, and every other page of the site.
 
+## Suggested page changes
+
+`/active-advent/` on the playground is a suggested version of the live Active Advent page, built by `make-advent.py` from the page as it is on `main`, with each change numbered and a review panel listing them. Rerun the script and push to refresh it. Nothing on imoves.com changes until Ian approves a change and it goes through the normal workflow on `main`.
+
 ## Publishing
 
 Push the `playground` branch. `.github/workflows/deploy-playground.yml` rebuilds the packages block and deploys `site/` plus `functions/` to `imoves-playground` with wrangler, using the repo's existing Cloudflare secrets. It creates the Pages project on its first run.
@@ -36,3 +40,4 @@ Push the `playground` branch. `.github/workflows/deploy-playground.yml` rebuilds
 
 - P0.1 - 12 November 2026 - first playground: single-page site, password gate, own Pages project and workflow.
 - P0.2 - 12 November 2026 - "How it works": heading now sits above the four blocks, and the showreel is centred vertically on the blocks rather than on the whole column. Phone layout unchanged.
+- P0.3 - 12 November 2026 - suggested Active Advent page at `/active-advent/`, with six numbered suggestions and a review panel. Adds `make-advent.py` and copies of the site's CSS, fonts and scripts (`site/default`, `site/video`).
