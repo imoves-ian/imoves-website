@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST = os.path.join(ROOT, sys.argv[1] if len(sys.argv) > 1 else 'dist')
-EXCLUDE = re.compile(r'^(version-[a-z]|tools|\.github|dist|node_modules|\.git)(/|$)|^(README\.md|\.nojekyll)$')
+EXCLUDE = re.compile(r'^(version-[a-z]|tools|brand|\.github|dist|node_modules|\.git)(/|$)|^(README\.md|\.nojekyll)$')
 
 if os.path.exists(DIST): shutil.rmtree(DIST)
 count = 0; too_big = []
