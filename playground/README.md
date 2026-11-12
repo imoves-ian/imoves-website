@@ -42,3 +42,4 @@ Push the `playground` branch. `.github/workflows/deploy-playground.yml` rebuilds
 - P0.2 - 12 November 2026 - "How it works": heading now sits above the four blocks, and the showreel is centred vertically on the blocks rather than on the whole column. Phone layout unchanged.
 - P0.3 - 12 November 2026 - suggested Active Advent page at `/active-advent/`, with six numbered suggestions and a review panel. Adds `make-advent.py` and copies of the site's CSS, fonts and scripts (`site/default`, `site/video`).
 - P0.4 - 12 November 2026 - sign-in page in place of the browser pop-up, which the Claude app's built-in browser never shows. Password form, 30-day cookie; same password.
+- P0.5 - 12 November 2026 - fix to P0.3: the copied site styles, fonts and scripts were never uploaded, because the root `.gitignore` skips every `dist` folder, so the suggested Active Advent page showed unstyled. `playground/.gitignore` makes an exception for `site/default/dist`.

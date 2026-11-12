@@ -1,0 +1,3 @@
+# The root .gitignore skips every "dist" folder (the build output). The playground needs its copy
+# of the site's styles, fonts and scripts, which live in a folder called dist.
+!site/default/dist/
