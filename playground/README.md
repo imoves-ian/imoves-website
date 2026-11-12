@@ -13,7 +13,7 @@ A private, password-protected experiment: the imoves.com sales site rebuilt as *
 
 ## Signing in
 
-The browser asks for a username and password. Username: `imoves`. The password is not stored in this repository (it is public); only a salted hash is, in `functions/_middleware.js`. Ian has the password.
+Open any playground address and an imoves sign-in page asks for the password (it works in every browser, including the built-in browser in the Claude app). You then stay signed in on that browser for 30 days. The old pop-up sign-in (username `imoves`) still works too. The password is not stored in this repository (it is public); only a salted hash is, in `functions/_middleware.js`. Ian has the password.
 
 Every response also carries `noindex, nofollow`, and `robots.txt` blocks all crawlers.
 
@@ -41,3 +41,4 @@ Push the `playground` branch. `.github/workflows/deploy-playground.yml` rebuilds
 - P0.1 - 12 November 2026 - first playground: single-page site, password gate, own Pages project and workflow.
 - P0.2 - 12 November 2026 - "How it works": heading now sits above the four blocks, and the showreel is centred vertically on the blocks rather than on the whole column. Phone layout unchanged.
 - P0.3 - 12 November 2026 - suggested Active Advent page at `/active-advent/`, with six numbered suggestions and a review panel. Adds `make-advent.py` and copies of the site's CSS, fonts and scripts (`site/default`, `site/video`).
+- P0.4 - 12 November 2026 - sign-in page in place of the browser pop-up, which the Claude app's built-in browser never shows. Password form, 30-day cookie; same password.
