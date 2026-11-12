@@ -81,6 +81,15 @@ header = header.replace('<header class="main-header', '<header data-suggest="2" 
 t = t[:k] + header + t[end:]
 t = re.sub(r'(<body[^>]*class="[^"]*)\bsimple-header\b', r'\1', t)
 
+# ---------------------------------------------------------------- 7. Active Advent logo in the header (this page only)
+# A deliberate brand exception, confirmed by Ian on 12 November 2026: on this page the top-left
+# header logo is the Active Advent campaign logo instead of the month's imoves logo.
+old_logo = '<img alt="11 November White Logo" height="85" src="../images/300x0/0x0-0x0/logos/11-november-white-logo.png" style="width: 150px;" width="300"/>'
+new_logo = ('<picture data-suggest="6" style="display:block"><source srcset="/assets/active-advent-logo.webp" type="image/webp">'
+            '<img alt="Active Advent" src="/assets/active-advent-logo.png" width="289" height="112" '
+            'style="display:block;height:58px;width:auto;margin:-8px 0"></picture>')
+t = suball(old_logo, new_logo, t)
+
 # ---------------------------------------------------------------- 3. hero: dates and one clear button
 t = suball('Every school day, a new Christmas door unlocks, revealing a surprise Active Blast for your class.</h2>',
            'Every school day, a new Christmas door unlocks, revealing a surprise Active Blast for your class.</h2>'
@@ -121,7 +130,7 @@ t = suball(' A little taste of Christmas magic!</h3>',
 gq = t.find('"Great fun activities for kids of all ages')
 blk_start = t.rfind('<div class="row px-20 md:px-30 my-30 md:my-50 lg:my-75" data-block="main-content">', 0, gq)
 blk_end = t.find('(Google Review, Miss Peasnall)</p></div></div>', gq) + len('(Google Review, Miss Peasnall)</p></div></div>')
-card = ('<div data-suggest="6" class="row px-20" style="margin:10px auto 60px;max-width:820px">'
+card = ('<div data-suggest="7" class="row px-20" style="margin:10px auto 60px;max-width:820px">'
         '<div style="background:#fff;border-radius:16px;padding:28px 30px;text-align:center;box-shadow:0 8px 24px rgba(112,47,138,.12)">'
         '<div style="color:#F68D2E;font-size:28px;letter-spacing:4px;line-height:1">★★★★★</div>'
         '<p class="text-xl md:text-2xl font-semibold text-purple leading-snug" style="margin:14px 0 10px">'
@@ -143,6 +152,7 @@ SUGGESTIONS = [
     ('Dates in the banner', 'The dates, how long it takes and that it is free, straight away, before anyone scrolls.', 'New line'),
     ('Wording tidy', 'Sentence case, per the brand rules (no all-capitals FREE, TOP USER, AND); "Davies Sport" link corrected to Davies Sports; "Prize!:" to "prize:"; "30th November" to 30 November; self-worth; every button now says the same thing.', 'Wording'),
     ('Introduce the videos first', 'The sentence introducing the three videos sat underneath them. It now comes first.', 'Order'),
+    ('Active Advent logo in the header', 'The Active Advent logo (Santa and reindeer) replaces the imoves November logo top-left, on this page only. A brand exception you confirmed; every other page keeps the monthly imoves logo.', 'Brand exception'),
     ('Google review as a card', 'The Google review was a large block of purple text. It now sits in a card with stars, to match the other reviews.', 'Design'),
 ]
 items = ''.join(
@@ -171,7 +181,7 @@ header .sg-pin{{top:auto;bottom:-14px;left:180px}}
 #sg.min ol,#sg.min .sg-foot{{display:none}}
 </style>
 <aside id="sg" aria-label="Suggested changes">
-  <div class="sg-head"><strong>Suggested changes (6)</strong><button type="button" id="sg-min">Hide</button></div>
+  <div class="sg-head"><strong>Suggested changes ({len(SUGGESTIONS)})</strong><button type="button" id="sg-min">Hide</button></div>
   <ol>{items}</ol>
   <div class="sg-foot">Click a change to jump to it. Compare with <a href="https://imoves.com/active-advent/" target="_blank" rel="noopener">the live page</a>. This review panel is for the playground only.</div>
 </aside>
