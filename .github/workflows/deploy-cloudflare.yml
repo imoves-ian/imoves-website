@@ -1,0 +1,66 @@
+name: Deploy to Cloudflare Pages
+
+# Publishes the site to the Cloudflare Pages project `imoves-site` (a direct-upload project,
+# imoves-site.pages.dev) with wrangler. Restored in v0.26 from the v0.17-v0.19 workflow because the
+# Cloudflare-GitHub link of the old project `imoves-website` stopped building after the repository
+# moved to imoves-ian (Cloudflare error 8000011).
+#
+# - Push to `production`: deploys the production site. Takes effect once `production` itself contains
+#   this file, because GitHub runs the workflow file of the branch that was pushed.
+# - Push to `main`: deploys the development view at main.imoves-site.pages.dev.
+# - Manual run (Actions tab > Deploy to Cloudflare Pages > Run workflow): builds the `production`
+#   branch exactly as it stands and deploys it as production. Nothing is promoted or changed in git.
+#
+# Secrets (repo Settings > Secrets and variables > Actions): CLOUDFLARE_API_TOKEN (Account >
+# Cloudflare Pages: Edit) and CLOUDFLARE_ACCOUNT_ID.
+
+on:
+  push:
+    branches: [production, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-pages-${{ github.event_name == 'workflow_dispatch' && 'production' || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  PROJECT: imoves-site
+  # A manual run always deploys the production branch; a push deploys the branch that was pushed.
+  DEPLOY_BRANCH: ${{ github.event_name == 'workflow_dispatch' && 'production' || github.ref_name }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.DEPLOY_BRANCH }}
+          fetch-depth: 0   # full history, so each sitemap entry gets the date its page last changed
+
+      - name: Build upload folder (live site only, _redirects, size checks)
+        run: python3 tools/build-dist.py dist
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Create the Pages project if it does not exist yet
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@3 pages project list 2>/dev/null | grep -q "^| $PROJECT " \
+            || npx --yes wrangler@3 pages project create "$PROJECT" --production-branch production
+
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@3 pages deploy dist --project-name "$PROJECT" --branch "$DEPLOY_BRANCH" --commit-dirty=true | tee deploy.log
+          echo "## Cloudflare Pages deploy ($DEPLOY_BRANCH, commit $(git rev-parse --short HEAD))" >> "$GITHUB_STEP_SUMMARY"
+          grep -Eo 'https://[a-z0-9.-]+\.pages\.dev' deploy.log | sort -u | sed 's/^/- /' >> "$GITHUB_STEP_SUMMARY"
