@@ -35,3 +35,4 @@ Push the `playground` branch. `.github/workflows/deploy-playground.yml` rebuilds
 ## Versions
 
 - P0.1 - 12 November 2026 - first playground: single-page site, password gate, own Pages project and workflow.
+- P0.2 - 12 November 2026 - "How it works": heading now sits above the four blocks, and the showreel is centred vertically on the blocks rather than on the whole column. Phone layout unchanged.

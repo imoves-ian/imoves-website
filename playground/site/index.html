@@ -78,6 +78,10 @@ section{padding:88px 0}
 .hero-kids img{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:auto;max-width:none;height:clamp(300px,40vw,500px);filter:saturate(1.05)}
 .hero-kids::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,var(--purple) 0,transparent 12%,transparent 88%,var(--purple) 100%)}
 
+/* how it works: heading above the blocks, video centred on the blocks */
+.how-grid{display:grid;grid-template-columns:1.05fr 1fr;grid-template-areas:"head ." "pillars video";column-gap:56px;align-items:center}
+.how-head{grid-area:head;margin-bottom:12px}.how-pillars .pillars{margin-top:0}.how-pillars{grid-area:pillars}.how-video{grid-area:video}
+@media (max-width:880px){.how-grid{grid-template-columns:1fr;grid-template-areas:"head" "pillars" "video";row-gap:24px}}
 /* pillars */
 .split{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
 @media (max-width:880px){.split{grid-template-columns:1fr;gap:36px}}
@@ -253,10 +257,12 @@ footer a{color:#fff}
 </section>
 
 <section id="how">
-  <div class="wrap split">
-    <div class="reveal">
+  <div class="wrap how-grid">
+    <div class="how-head reveal">
       <span class="eyebrow">How it works</span>
       <h2>One platform for the moments when movement can make a difference</h2>
+    </div>
+    <div class="how-pillars reveal">
       <div class="pillars">
         <div class="pillar"><div class="ic">🤸</div><h3>Teach PE and dance confidently</h3><p>Easy-to-follow lessons, demonstrations and planning that help non-specialist teachers deliver high-quality PE.</p></div>
         <div class="pillar"><div class="ic">🧠</div><h3>Make learning active</h3><p>Simple movement-based activities for Maths, English, Science and more that fit into the lessons teachers are already teaching.</p></div>
@@ -264,7 +270,7 @@ footer a{color:#fff}
         <div class="pillar"><div class="ic">💜</div><h3>Support wellbeing</h3><p>Practical breathing, movement and wellbeing activities that help children regulate, refocus and feel ready to learn.</p></div>
       </div>
     </div>
-    <div class="reveal">
+    <div class="how-video reveal">
       <button class="video" data-uid="876b53f66e1e95fa9b9ebb73a3c65b8d" data-title="imoves showreel" aria-label="Play the imoves showreel">
         <picture><source srcset="assets/awn6tkd1mu.webp" type="image/webp"><img src="assets/awn6tkd1mu.jpg" alt="" width="1280" height="720" loading="lazy"></picture>
         <span class="play" aria-hidden="true"></span>
