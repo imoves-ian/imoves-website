@@ -101,7 +101,8 @@ CSS = '''<style>
 .hp-strip-link{color:#702F8A;font-weight:700;text-decoration:underline}
 .hp-strip-btn{background:#E03C31;color:#fff!important;font-weight:700;border-radius:999px;padding:5px 18px;text-decoration:none}
 .hp-strip-btn:hover{background:#c8352b}
-@media (max-width:640px){.hp-strip-in{gap:8px 12px;padding:9px 14px}.hp-strip p{font-size:.95rem;text-align:center;flex-basis:100%}.hp-strip svg{display:none}}
+@media (max-width:1100px){.hp-strip-in{gap:8px 14px;padding:9px 14px}.hp-strip p{text-align:center;flex-basis:100%}.hp-strip-in > svg{display:none}}
+@media (max-width:640px){.hp-strip p{font-size:.95rem}}
 /* 2 feature */
 .hp-advent{background:#fff;padding:56px 20px}
 .hp-advent-in{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1.05fr;gap:44px;align-items:center}
@@ -153,7 +154,7 @@ t = suball('</body>', JS + '</body>', t, 1)
 SUGGESTIONS = [
     ('Active Advent strip under the header', 'A slim festive strip on every visit: what it is, a live countdown ("18 days to go", then "Door 3 opens today!"), Find out more and Join free.', 'New'),
     ('Active Advent section after the banner', 'The Active Advent logo, a short pitch, the countdown, Join free and Find out more, and a small version of the 15-door calendar from the Active Advent page. Says that existing users and past free trials just log in.', 'New section'),
-    ('Active Advent in the menu', 'A red "Advent" pill with a star in the main menu beside Login (the menu itself is already full) and a link at the top of the phone menu. On the live site the menu is on every page, so this would be a site-wide change.', 'Menu'),
+    ('Active Advent in the menu', 'At the top of the "What we offer" drop-down, with a red dot on "What we offer" to draw the eye, and at the top of the phone menu. The menu itself is full (on the live site it only fits on one line from 1280px wide), so there is no room for a new item. The menu is on every page, so on the live site this would be a site-wide change.', 'Menu'),
     ('A free route next to "Book a Demo"', 'Under the first "See how imoves could work in your school" bar: "Not ready for a demo? Try imoves free this Christmas with Active Advent". Turns the campaign into a way in for schools not ready to talk to sales.', 'New line'),
 ]
 panel = review_panel(SUGGESTIONS, 'https://imoves.com/')
