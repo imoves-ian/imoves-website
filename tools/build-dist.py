@@ -59,6 +59,30 @@ for dirpath, _, files in os.walk(DIST):
 leftover = [os.path.relpath(os.path.join(d, f), DIST) for d, _, fs in os.walk(DIST) for f in fs
             if f.endswith('.html') and 'dmlaycock.github.io' in open(os.path.join(d, f), encoding='utf-8', errors='ignore').read()]
 
+# Canonical and og:url (v0.35): every real page gets one absolute canonical on the live address, in
+# the form Google already indexes and the sitemap below lists (https://imoves.com/dance, homepage
+# https://imoves.com/), and an og:url that matches. Forwarding stubs are left alone. The build stops
+# if a page's own canonical points at a different page, so such a page is fixed at source, never
+# silently overwritten.
+from urllib.parse import urlparse
+canon_set = 0; canon_wrong = []
+for f in sorted(glob.glob(os.path.join(DIST, '**', 'index.html'), recursive=True)):
+    s = open(f, encoding='utf-8', errors='surrogateescape').read()
+    if 'http-equiv="refresh"' in s[:4000]: continue
+    rel = os.path.relpath(os.path.dirname(f), DIST).replace(os.sep, '/')
+    path = '/' if rel == '.' else '/' + rel
+    want = LIVE + path
+    tags = re.findall(r'<link\b[^>]*\brel="canonical"[^>]*>', s)
+    if len(tags) != 1: canon_wrong.append(f'{path}: {len(tags)} canonical tags'); continue
+    href = re.search(r'\bhref="([^"]*)"', tags[0]).group(1)
+    got = urlparse(urljoin(LIVE + path.rstrip('/') + '/', href))
+    if got.netloc != urlparse(LIVE).netloc or (got.path.rstrip('/') or '/') != path:
+        canon_wrong.append(f'{path}: canonical points at {href}'); continue
+    s = s.replace(tags[0], tags[0].replace(f'href="{href}"', f'href="{want}"'), 1)
+    s = re.sub(r'(<meta\b[^>]*\bcontent=")[^"]*("[^>]*\bproperty="og:url")', lambda m: m.group(1) + want + m.group(2), s, count=1)
+    s = re.sub(r'(<meta\b[^>]*\bproperty="og:url"[^>]*\bcontent=")[^"]*(")', lambda m: m.group(1) + want + m.group(2), s, count=1)
+    open(f, 'w', encoding='utf-8', errors='surrogateescape').write(s); canon_set += 1
+
 # sitemap.xml from the pages that are actually published (issues log #5): every real page, no
 # forwards, no 404, and none of the pages people only reach after doing something.
 import subprocess, datetime
@@ -83,7 +107,9 @@ for f in sorted(glob.glob(os.path.join(DIST, '**', 'index.html'), recursive=True
     urls.append(f'  <url>\n    <loc>{loc}</loc>\n    <lastmod>{lastmod(src)}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>{pri}</priority>\n  </url>')
 open(os.path.join(DIST, 'sitemap.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(urls) + '\n</urlset>\n')
 
-print(f'dist: {count} files, {len(rules)//2} redirects, {swapped} preview links switched to {LIVE}, sitemap {len(urls)} pages')
+print(f'dist: {count} files, {len(rules)//2} redirects, {swapped} preview links switched to {LIVE}, sitemap {len(urls)} pages, {canon_set} canonicals set')
+if canon_wrong:
+    print('CANONICAL PROBLEMS (fix the page itself):', canon_wrong); sys.exit(1)
 if leftover:
     print('PREVIEW ADDRESS STILL PRESENT in:', leftover[:5]); sys.exit(1)
 if too_big:
